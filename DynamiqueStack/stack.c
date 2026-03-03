@@ -43,7 +43,7 @@ Stack *pop(Stack *s){
 
 
 bool isEmpty(Stack *s){
-    return (s->top==NULL)
+    return (s->top==NULL);
 }
 
 

@@ -15,4 +15,3 @@ bool isEmpty(Stack *s);
 
 Stack top(const Stack *s);
 
-Stack DestroyStack(Stack *s);
