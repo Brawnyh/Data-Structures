@@ -4,10 +4,11 @@
 
 
 int main(void){
-    Stack s=CreateStack();
+    Stack* s= CreateStack();
     for (int i=0;i<10;i++){
         push(s,i);
-        printf("%d",i);
+        printf(" %d\n",i);
+        
     }
     while(!isEmpty(s)){
         pop(s);

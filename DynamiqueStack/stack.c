@@ -12,9 +12,9 @@ struct s_Stack{
     Element top;
 };
 
-Stack * createStack(void){
+Stack * CreateStack(void){
     Stack *s = malloc(sizeof(struct s_Stack));
-    if s == NULL {
+    if (s == NULL) {
         perror("malloc");
         exit(1);
     }
@@ -48,13 +48,16 @@ bool isEmpty(Stack *s){
 
 
 int top(const Stack *s){
-    assert(!isEmpty);
+    assert(isEmpty);
     return s->top->value;
 }
 
 //no estoy seguro de la destruccion
 Stack *DestroyStack(Stack *s){
     assert(!isEmpty);
-
-
+    while(!isEmpty(s)){
+        pop(s);
+    }
+    free(s);
+    return NULL;
 }
