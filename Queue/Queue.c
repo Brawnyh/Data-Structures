@@ -12,21 +12,20 @@ struct s_Queue{
 };
 
 Queue* createQueue(void){
-    Queue * q = malloc(sizeof(struct Queue));
-    assert(q==NULL);
+    Queue * q = malloc(sizeof(struct s_Queue));
     q->head=0;
     q->tail=-1;
-    q->size=0
+    q->size=0;
     return q;
 }
 
 
 bool queue_empty(const Queue *q){
-    return (q->Queue==NULL);
+    return (q->size==0);
 }
 
 
-Queue *push(Queue* q,int s){
+Queue *queue_push(Queue* q,int s){
     assert(q->size<QueueSize);
     q->tail=(q->tail + 1)%QueueSize;//el modulo no hace nada hasta que detecta que tail es 16 y asi envia 0(primer elemento)(circular)
     q->Queue[q->tail]=s;
@@ -35,7 +34,7 @@ Queue *push(Queue* q,int s){
 }
 
 Queue* queue_pop(Queue *q){
-    assert(!queue_empty);
+    assert(!queue_empty(q));
     q->head=(q->head+1)%QueueSize;
     --q->size;
     return q;
@@ -45,7 +44,3 @@ int top(Queue* q){
     assert(!queue_empty(q));
     return q->Queue[q->head];
 }
-
-
-
-Queue
