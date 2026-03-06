@@ -25,16 +25,19 @@ bool queue_empty(const Queue *q){
     return (q->Queue==NULL);
 }
 
-bool queue_size(const Queue *q){
-    int i=0;
-    
-}
 
 Queue *push(Queue* q,int s){
     assert(q->size<QueueSize);
     q->tail=(q->tail + 1)%QueueSize;//el modulo no hace nada hasta que detecta que tail es 16 y asi envia 0(primer elemento)(circular)
     q->Queue[q->tail]=s;
     ++q->size;
+    return q;
+}
+
+Queue* queue_pop(Queue *q){
+    assert(!queue_empty);
+    q->head=(q->head+1)%QueueSize;
+    --q->size;
     return q;
 }
 
