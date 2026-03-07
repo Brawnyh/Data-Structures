@@ -1,0 +1,5 @@
+1762178175319	Rename field 'nb_trophees'
+1762178409438	Rename field 'nb_troph'
+1762178521747	Rename local variable 'trophees'
+1762178968677	Rename method 'CalculResistanceEquipement'
+1762179658564	Move compilation unit
