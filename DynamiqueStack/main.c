@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 
+
 int main(void){
     Stack* s= CreateStack();
     for (int i=0;i<10;i++){
