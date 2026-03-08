@@ -5,11 +5,11 @@
 
 
 
-struct s_LinkedList{
+typedef struct s_LinkedList{
     int value;
     struct s_LinkedList *prev;
     struct s_LinkedList *next;
-}Linkedlist;
+} Linkedlist;
 
 
 struct s_list{
@@ -28,11 +28,25 @@ list *CreateListe(void){
 
 }
 
+
+list *push_back(list *l,int v){
+    Linkedlist**e=l->gauge ? &(l->tail->next) : &(l->head);
+    *e=malloc(sizeof(Linkedlist));
+    (*e)->value=v;
+    (*e)->next=NULL;
+    (*e)->prev=l->tail;
+    l->tail=*e;
+    l->gauge+=1;
+    return l;
+    
+}
+
 bool empty(list *l){
     return (l->gauge==0);
 }
 
-list push ;
+
+
 
 
 
