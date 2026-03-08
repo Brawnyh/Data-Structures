@@ -23,15 +23,15 @@ list *pop_back(list *l);
 
 int size(list *l);
 
-int back (list *l);
+int back (const list *l);
 
-int front(list *l);
+int front(const list *l);
 
 list *insert_at(list *l,unsigned int i,int v);
 
 list *remove_at(list *l,unsigned int i,int v);
 
-int at(list *l,unsigned int i);
+int at(const list *l,unsigned int i);
 
 
 
