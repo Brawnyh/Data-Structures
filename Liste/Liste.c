@@ -15,7 +15,7 @@ typedef struct s_LinkedList{
 struct s_list{
     struct s_LinkedList * head;
     struct s_LinkedList * tail;
-    unsigned int gauge; //numero de elementoss
+    int gauge; //numero de elementoss
 
 };
 
@@ -42,12 +42,13 @@ list *push_back(list *l,int v){
 }
 
 list *push_front(list *l,int v){
-    Linkedlist *e = l->gauge ? &(l->head->prev) : &(l->tail);
+    Linkedlist **e = l->gauge ? &(l->head->prev) : &(l->tail);
     *e=malloc(sizeof(Linkedlist));
     (*e)->value=v;
     (*e)->next=l->head;
-    (*e)->prev=l->NULL;
+    (*e)->prev=NULL;
     l->head=*e;
+    return l;
     
 }
 
@@ -63,6 +64,7 @@ list *pop_front(list *l){
     }
     --(l->gauge);
     free(e);
+    return l;
 }
 
 int front(const list *l){
@@ -91,14 +93,16 @@ muchos ifs else de ahi la notion de sentinelle.
 
 list *insert_at(list *l,int p,int v){
     assert((0<=p) && (p<=l->gauge));
-    list *insert =l->head;
-    while (p--) insert =insert->next;
-    list *e =malloc(sizeof(Linkedlist));
+    Linkedlist *insert = l->head;
+    
+    while (p--) insert = insert->next;
+    Linkedlist *e =malloc(sizeof(Linkedlist));
     e->value=v; e->next=insert;
     e->prev=(insert ? insert->prev :l->tail);
 
     if (e->prev){
         e->prev->next=e;
+        
     }else{
         l->head=e;
     }if(e->next){

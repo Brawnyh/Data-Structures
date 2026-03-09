@@ -27,11 +27,11 @@ int back (const list *l);
 
 int front(const list *l);
 
-list *insert_at(list *l,unsigned int i,int v);
+list *insert_at(list *l,int i,int v);
 
-list *remove_at(list *l,unsigned int i,int v);
+list *remove_at(list *l,int p);
 
-int at(const list *l,unsigned int i);
+int at(const list *l,int p);
 
 
 
