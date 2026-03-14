@@ -11,7 +11,6 @@ typedef struct s_linkedList{
 struct s_Liste{
     LinkedList *sentinel;
     int gauge;
-
 };
 
 
@@ -24,7 +23,6 @@ liste *createListe(void){
     l->sentinel->prev=l->sentinel->next=l->sentinel;
     l->gauge=0;
     return l;
-
 }
 
 void empty(const liste *l){
@@ -93,9 +91,13 @@ liste *remove_at(liste *l,int pos){
     return l;  
 }
 
-list *map(liste *l,listeMapFunctor f){
+
+
+
+liste *map(liste *l,listeMapFunctor f){
     for (LinkedList *e =l->sentinel->next; e!=l->sentinel; e=e->next){
         e->value=f(e->value);
     }
     return l;
 }
+//errores de compilacion varios a verificar

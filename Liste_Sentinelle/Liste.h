@@ -7,7 +7,7 @@
 
 typedef struct s_Liste liste;
 typedef int (*listeMapFunctor)(int);
-list *map(liste *l,listeMapFunctor f);
+liste *map(liste *l,listeMapFunctor f);
 
 liste * createListe(void);
 
