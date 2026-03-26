@@ -22,6 +22,7 @@ void print_queue(FILE* f, Queue* q);
  */
 void computeExpressions(FILE* input) {
 	(void)input;
+	//hay que terminar esto
 	//input=fopen((char *)input,"r"); tal vez no e snecesario abrirlo aqui
 	//if (input==0){perror("erreur d'ouverture");exit(1);}
 	char *line=malloc(sizeof(char));
