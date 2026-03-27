@@ -25,8 +25,8 @@ void computeExpressions(FILE* input) {
 	//hay que terminar esto
 	//input=fopen((char *)input,"r"); tal vez no e snecesario abrirlo aqui
 	//if (input==0){perror("erreur d'ouverture");exit(1);}
-	char *line=malloc(sizeof(char));
-	//if (line==NULL){perror("erreur d'allocation");exit(1);}
+	char *line=(char*)malloc(sizeof(char));
+	if (line==NULL){perror("erreur d'allocation");exit(1);}
 	char buffer[1024];
 	//on stock le nb de ligne du fichier(exemple dans man)
 	//ssize_t nlus;
