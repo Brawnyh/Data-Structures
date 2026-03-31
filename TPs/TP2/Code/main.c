@@ -75,7 +75,8 @@ void computeExpressions(FILE* input) {
 		if (nlus>1){
 			printf("Input: %s",line);
 			printf("Infix: ");
-			print_queue(input,stringToTokenQueue(line));
+			print_queue(stdout,stringToTokenQueue(line));
+			printf("\n");
 		}
 		
 	}
