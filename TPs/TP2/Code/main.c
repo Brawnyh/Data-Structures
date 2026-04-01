@@ -56,7 +56,7 @@ Queue *stringToTokenQueue(const char * expression){
 		
 
 	}
-
+	
 	return q;
 }
 
@@ -69,18 +69,22 @@ void computeExpressions(FILE* input) {
 	char *line=NULL;
 	size_t longeur=0;
 	ssize_t nlus;
-	//Queue *q;
+	Queue *q;
 	while((nlus=getline(&line,&longeur,input))!=-1){
 		//printf("Input: %s\n",nlus);
 		if (nlus>1){
 			printf("Input: %s",line);
 			printf("Infix: ");
-			print_queue(stdout,stringToTokenQueue(line));
+			q=stringToTokenQueue(line);
+			print_queue(stdout,q);
 			printf("\n");
 		}
 		
 	}
+	//solucionar
+	delete_queue(&q);
 	free(line);
+	
 	//fclose(input);
 }
 
