@@ -81,11 +81,24 @@ void computeExpressions(FILE* input) {
 		}
 		
 	}
-	//solucionar
+	
 	delete_queue(&q);
 	free(line);
 	
 	//fclose(input);
+}
+
+
+Queue *shuntingYard(Queue *infix){
+	//notation postFix
+	//d'abord chiffre apprés symboles
+	
+	Queue* output=create_queue();
+	const Token* tok;
+	while (!queue_empty(infix)){
+		tok=queue_top(infix);
+		while tok==
+	}
 }
 
 /** Main function for testing.
