@@ -97,7 +97,21 @@ Queue *shuntingYard(Queue *infix){
 	const Token* tok;
 	while (!queue_empty(infix)){
 		tok=queue_top(infix);
-		while tok==
+		if (token_is_number(tok)){
+			queue_push(output,tok);
+		}
+		if (token_is_operator(tok)){
+			while(token_operator_priority(queue_top(infix))>token_operator_priority(tok) ||
+			 token_operator_priority(queue(infix))==token_operator_priority(tok) && token_operator_leftAssociative(tok) &&
+			token_is_parenthesis(queue_top(infix))!=create_token_from_string(")")) {//conditions a verifier
+				queue_push(output,queue_pop(infix));
+				//push the read operator onto the operator stack?
+			}
+			queue(push)
+
+		}
+
+		if (token == ")")
 	}
 }
 
