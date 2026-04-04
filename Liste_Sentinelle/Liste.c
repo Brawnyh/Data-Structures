@@ -25,7 +25,7 @@ liste *createListe(void){
     return l;
 }
 
-void empty(const liste *l){
+bool empty(const liste *l){
     return l->gauge==0;
 }
 
