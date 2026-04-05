@@ -57,6 +57,19 @@ bool token_is_parenthesis(const Token* t) {
 	return t->type == parenthesis;
 }
 
+//test parethese
+
+bool token_is_right_parenthesis(const Token *t){
+	return t->type == parenthesis && t->value.symbol == ')';
+}
+
+
+bool token_is_left_parenthesis(const Token *t){
+	return t->type == parenthesis && t->value.symbol == '(';
+}
+
+
+
 float token_value(const Token* t) {
 	assert( token_is_number(t) );
 	return t->value.number;

@@ -18,6 +18,7 @@ void print_token(const void* e, void* user_param);
 void print_queue(FILE* f, Queue* q);
 
 
+
 bool isSymbol(char c){
 	if (c=='+' || c== '-' || c=='/' || c=='*' || c== '^' || c== ')' || c== '('){
 		return true;
@@ -29,9 +30,7 @@ bool isSymbol(char c){
 Queue *stringToTokenQueue(const char * expression){
 	Queue* q=create_queue();
 	const char*curpos=expression;
-	//int i=0;
-	//int tmpIndex=0;
-	//char tmp[128];
+	
 	while(*curpos!='\0'){
 		while (*curpos == ' ' || *curpos =='\n'){
 			curpos++;
@@ -61,6 +60,61 @@ Queue *stringToTokenQueue(const char * expression){
 }
 
 
+Queue *shuntingYard(Queue *infix){
+	//notation postFix
+	//d'abord chiffre apprés symboles
+	
+	Queue* output=create_queue();
+	Token* tok;
+	Stack* opStack = create_stack(queue_size(infix)); 
+
+	while (!queue_empty(infix)){
+		tok=(Token*) queue_pop(infix); //erreur de type sans le cast
+		if (token_is_number(tok)){
+			queue_push(output,tok);
+		}
+		else if (token_is_operator(tok)){
+			
+			while (!stack_empty(opStack) && token_is_operator(stack_top(opStack))) {
+    			Token* topOp = (Token*) stack_top(opStack);
+    			if ((token_operator_priority(topOp) > token_operator_priority(tok)) ||
+        			(token_operator_priority(topOp) == token_operator_priority(tok) && token_operator_leftAssociative(tok))) {
+        			queue_push(output, stack_pop(opStack));
+    			} else {
+        			break;
+    			}
+			}				
+			stack_push(opStack,tok);
+		}
+		else if (token_is_left_parenthesis(tok)){
+			stack_push(opStack,tok);
+		}
+
+		else if (token_is_right_parenthesis(tok)){
+			while(!stack_empty(opStack) && !token_is_left_parenthesis(stack_top(opStack))){
+				queue_push(output,stack_pop(opStack));
+			}
+			if (!stack_empty(opStack) && token_is_left_parenthesis(stack_top(opStack))){
+				stack_pop(opStack);
+			}
+		}
+	}
+
+	while(!stack_empty(opStack)){
+		
+		Token *t=(Token*) stack_pop(opStack);
+		if (token_is_parenthesis(t)){
+			break;//ou message de erreur
+		}else{
+			queue_push(output,t);
+		}
+		
+	}
+	delete_stack(&opStack);
+	return output;
+}
+
+
 /** 
  * Function to be written by students
  */
@@ -70,6 +124,7 @@ void computeExpressions(FILE* input) {
 	size_t longeur=0;
 	ssize_t nlus;
 	Queue *q;
+	Queue *postfix;
 	while((nlus=getline(&line,&longeur,input))!=-1){
 		//printf("Input: %s\n",nlus);
 		if (nlus>1){
@@ -78,42 +133,24 @@ void computeExpressions(FILE* input) {
 			q=stringToTokenQueue(line);
 			print_queue(stdout,q);
 			printf("\n");
+			printf("Postfix: ");
+			postfix=shuntingYard(q);
+			print_queue(stdout,postfix);
+			printf("\n");
+			delete_queue(&q);
+			delete_queue(&postfix);
 		}
 		
 	}
 	
-	delete_queue(&q);
+	
 	free(line);
 	
 	//fclose(input);
 }
 
 
-Queue *shuntingYard(Queue *infix){
-	//notation postFix
-	//d'abord chiffre apprés symboles
-	
-	Queue* output=create_queue();
-	const Token* tok;
-	while (!queue_empty(infix)){
-		tok=queue_top(infix);
-		if (token_is_number(tok)){
-			queue_push(output,tok);
-		}
-		if (token_is_operator(tok)){
-			while(token_operator_priority(queue_top(infix))>token_operator_priority(tok) ||
-			 token_operator_priority(queue(infix))==token_operator_priority(tok) && token_operator_leftAssociative(tok) &&
-			token_is_parenthesis(queue_top(infix))!=create_token_from_string(")")) {//conditions a verifier
-				queue_push(output,queue_pop(infix));
-				//push the read operator onto the operator stack?
-			}
-			queue(push)
 
-		}
-
-		if (token == ")")
-	}
-}
 
 /** Main function for testing.
  * The main function expects one parameter that is the file where expressions to translate are

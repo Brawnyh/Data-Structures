@@ -75,6 +75,7 @@ char token_parenthesis(const Token* t);
  */
 int token_operator_priority(const Token* t);
 
+
 /** Is the operator left associative.
  @param t : the token to examine
  @return true if operator is left associative.
@@ -82,6 +83,22 @@ int token_operator_priority(const Token* t);
  @see token_is_operator
  */
 bool token_operator_leftAssociative(const Token* t);
+
+/** Is the operator left associative.
+ @param t : the token to examine
+ @return true if operator is left parenthesis.
+ @pre token_is_operator(t) == true
+ @see token_is_operator
+ */
+bool token_is_left_parenthesis(const Token *t);
+
+/** Is the operator left associative.
+ @param t : the token to examine
+ @return true if operator is a right parenthesis.
+ @pre token_is_operator(t) == true
+ @see token_is_operator
+ */
+bool token_is_right_parenthesis(const Token *t);
 
 /** Dump the token to the given file */
 void token_dump(FILE* f, const Token* t);
