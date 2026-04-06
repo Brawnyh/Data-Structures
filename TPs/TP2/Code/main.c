@@ -39,6 +39,7 @@ Queue *stringToTokenQueue(const char * expression){
 
 		if (isSymbol(*curpos)){
 			Token *tok=create_token_from_string(curpos,1);
+			
 			queue_push(q,tok);
 			curpos++;
 			
@@ -68,7 +69,9 @@ Queue *shuntingYard(Queue *infix){
 	Stack* opStack = create_stack(queue_size(infix)); 
 
 	while (!queue_empty(infix)){
-		tok=(Token*) queue_pop(infix); //erreur de type sans le cast
+		tok=(Token*) queue_top(infix); //erreur de type sans le cast
+		queue_pop(infix);
+		
 		if (token_is_number(tok)){
 			queue_push(output,tok);
 		}
@@ -77,7 +80,8 @@ Queue *shuntingYard(Queue *infix){
     			Token* topOp = (Token*) stack_top(opStack);
     			if ((token_operator_priority(topOp) > token_operator_priority(tok)) ||
         			(token_operator_priority(topOp) == token_operator_priority(tok) && token_operator_leftAssociative(tok))) {
-        			queue_push(output, (Token*)stack_pop(opStack));
+        			queue_push(output, (Token*)stack_top(opStack));
+					stack_pop(opStack);
     			} else {
         			break;
     			}
@@ -90,7 +94,8 @@ Queue *shuntingYard(Queue *infix){
 
 		else if (token_is_right_parenthesis(tok)){
 			while(!stack_empty(opStack) && !token_is_left_parenthesis(stack_top(opStack))){
-				queue_push(output,(Token*)stack_pop(opStack));
+				queue_push(output,(Token*)stack_top(opStack));
+				stack_pop(opStack);
 			}
 			if (!stack_empty(opStack)){
 				stack_pop(opStack);
@@ -99,7 +104,8 @@ Queue *shuntingYard(Queue *infix){
 	}
 
 	while(!stack_empty(opStack)){
-		Token *t=(Token*) stack_pop(opStack);
+		Token *t=(Token*) stack_top(opStack);
+		stack_pop(opStack);
 		queue_push(output,t);
 		
 	}
@@ -110,14 +116,17 @@ Queue *shuntingYard(Queue *infix){
 float evaluatePostfix(Queue* postfix){
     Stack* stack = create_stack(queue_size(postfix));
     while (!queue_empty(postfix)){
-        Token* tok = (Token*) queue_pop(postfix);
+        Token* tok = (Token*) queue_top(postfix);
+		queue_pop(postfix);
 
         if (token_is_number(tok)){
             stack_push(stack, tok);
         }
         else if (token_is_operator(tok)){
-            Token* b = (Token*) stack_pop(stack);
-            Token* a = (Token*) stack_pop(stack);
+            Token* b = (Token*) stack_top(stack);
+			stack_pop(stack);
+            Token* a = (Token*) stack_top(stack);
+			stack_pop(stack);
 
             float v1 = token_value(a);
             float v2 = token_value(b);
@@ -134,7 +143,8 @@ float evaluatePostfix(Queue* postfix){
             stack_push(stack, result);
         }
     }
-    Token* final = (Token*) stack_pop(stack);
+    Token* final = (Token*) stack_top(stack);
+	stack_pop(stack);
     float result = token_value(final);
 
     delete_stack(&stack);
