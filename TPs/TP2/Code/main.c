@@ -59,7 +59,6 @@ Queue *stringToTokenQueue(const char * expression){
 	return q;
 }
 
-
 Queue *shuntingYard(Queue *infix){
 	//notation postFix
 	//d'abord chiffre apprés symboles
@@ -74,12 +73,11 @@ Queue *shuntingYard(Queue *infix){
 			queue_push(output,tok);
 		}
 		else if (token_is_operator(tok)){
-			
 			while (!stack_empty(opStack) && token_is_operator(stack_top(opStack))) {
     			Token* topOp = (Token*) stack_top(opStack);
     			if ((token_operator_priority(topOp) > token_operator_priority(tok)) ||
         			(token_operator_priority(topOp) == token_operator_priority(tok) && token_operator_leftAssociative(tok))) {
-        			queue_push(output, stack_pop(opStack));
+        			queue_push(output, (Token*)stack_pop(opStack));
     			} else {
         			break;
     			}
@@ -92,27 +90,58 @@ Queue *shuntingYard(Queue *infix){
 
 		else if (token_is_right_parenthesis(tok)){
 			while(!stack_empty(opStack) && !token_is_left_parenthesis(stack_top(opStack))){
-				queue_push(output,stack_pop(opStack));
+				queue_push(output,(Token*)stack_pop(opStack));
 			}
-			if (!stack_empty(opStack) && token_is_left_parenthesis(stack_top(opStack))){
+			if (!stack_empty(opStack)){
 				stack_pop(opStack);
 			}
 		}
 	}
 
 	while(!stack_empty(opStack)){
-		
 		Token *t=(Token*) stack_pop(opStack);
-		if (token_is_parenthesis(t)){
-			break;//ou message de erreur
-		}else{
-			queue_push(output,t);
-		}
+		queue_push(output,t);
 		
 	}
 	delete_stack(&opStack);
 	return output;
 }
+
+float evaluatePostfix(Queue* postfix){
+    Stack* stack = create_stack(queue_size(postfix));
+    while (!queue_empty(postfix)){
+        Token* tok = (Token*) queue_pop(postfix);
+
+        if (token_is_number(tok)){
+            stack_push(stack, tok);
+        }
+        else if (token_is_operator(tok)){
+            Token* b = (Token*) stack_pop(stack);
+            Token* a = (Token*) stack_pop(stack);
+
+            float v1 = token_value(a);
+            float v2 = token_value(b);
+            float res = 0;
+
+            switch(token_operator(tok)){
+                case '+': res = v1 + v2; break;
+                case '-': res = v1 - v2; break;
+                case '*': res = v1 * v2; break;
+                case '/': res = v1 / v2; break;
+                case '^': res = pow(v1, v2); break;
+            }
+            Token* result = create_token_from_value(res);
+            stack_push(stack, result);
+        }
+    }
+    Token* final = (Token*) stack_pop(stack);
+    float result = token_value(final);
+
+    delete_stack(&stack);
+    return result;
+}
+
+
 
 
 /** 
@@ -125,18 +154,24 @@ void computeExpressions(FILE* input) {
 	ssize_t nlus;
 	Queue *q;
 	Queue *postfix;
+	float res;
 	while((nlus=getline(&line,&longeur,input))!=-1){
 		//printf("Input: %s\n",nlus);
 		if (nlus>1){
 			printf("Input: %s",line);
-			printf("Infix: ");
 			q=stringToTokenQueue(line);
+			printf("Infix: ");
 			print_queue(stdout,q);
 			printf("\n");
+
 			printf("Postfix: ");
 			postfix=shuntingYard(q);
 			print_queue(stdout,postfix);
 			printf("\n");
+
+			res=evaluatePostfix(postfix);
+			printf("Result: %f\n",res);
+
 			delete_queue(&q);
 			delete_queue(&postfix);
 		}
