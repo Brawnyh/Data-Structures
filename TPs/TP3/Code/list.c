@@ -31,6 +31,12 @@ struct s_List {
 
 List* list_create(void) {
 	List* l = NULL;
+	l=malloc(sizeof(struct s_List)*sizeof(LinkedElement));
+	
+	l->sentinel=(LinkedElement*)(l+1);
+	l->sentinel->previous=l->sentinel->next=l->sentinel;
+	l->size=0;
+	
 	return l;
 }
 
@@ -38,6 +44,13 @@ List* list_create(void) {
 
 List* list_push_back(List* l, int v) {
 	(void)v;
+	LinkedElement *e=malloc(sizeof(LinkedElement));
+	e->value=v;
+	e->next=l->sentinel;
+	e->previous=e->next->previous;
+	e->next->previous=e;
+	e->previous->next=e;
+	++(l->size);
 	return l;
 }
 
