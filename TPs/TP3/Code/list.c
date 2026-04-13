@@ -64,6 +64,13 @@ void list_delete(ptrList* l) {
 
 List* list_push_front(List* l, int v) {
 	(void)v;
+	LinkedElement *e=malloc(sizeof(LinkedElement));
+	e->value=v;
+	e->next=l->sentinel->next;
+	e->previous=l->sentinel;
+	e->next->previous=e;
+	e->previous->next=e:
+	++(l->size);
 	return l;
 }
 
@@ -84,6 +91,12 @@ int list_back(const List* l) {
 /*-----------------------------------------------------------------*/
 
 List* list_pop_front(List* l) {
+	assert (list_is_empty(l));
+    LinkedList *e=l->sentinel->next;
+    e->next->previous=e->previous;
+    e->previous->next=e->next;
+    free(e);
+    --(l->size);
 	return l;
 }
 
