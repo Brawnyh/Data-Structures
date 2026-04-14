@@ -111,6 +111,15 @@ List* list_pop_back(List* l){
 List* list_insert_at(List* l, int p, int v) {
 	(void)v;
 	(void)p;
+	LinkedElement *insert=l->sentinel->next;
+	while(p--) insert=insert->next;
+	LinkedElement *e=malloc(sizeof(LinkedElement));
+	e->value=v:
+	e->next=insert; 
+    e->previous=insert->previous;
+    e->next->previous=e;
+    e->previous->next=e;
+    ++(l->size);
 	return l;
 }
 
