@@ -78,13 +78,17 @@ List* list_push_front(List* l, int v) {
 
 int list_front(const List* l) {
 	(void)l;
-	return 0;
+	return l->sentinel->value;
+	//return 0;
 }
 
 /*-----------------------------------------------------------------*/
 
 int list_back(const List* l) {
 	(void)l;
+	//linkedList tmp=l->sentinel
+	//while(!tempty) tmp=tmp->next
+	//return tmp->value
 	return 0;
 }
 
@@ -120,6 +124,7 @@ List* list_insert_at(List* l, int p, int v) {
     e->next->previous=e;
     e->previous->next=e;
     ++(l->size);
+
 	return l;
 }
 
@@ -127,6 +132,7 @@ List* list_insert_at(List* l, int p, int v) {
 
 List* list_remove_at(List* l, int p) {
 	(void)p;
+	//frees
 	return l;
 }
 
@@ -141,14 +147,14 @@ int list_at(const List* l, int p) {
 
 bool list_is_empty(const List* l) {
 	(void)l;
-	return false;
+	return (l->size==0);
 }
 
 /*-----------------------------------------------------------------*/
 
 int list_size(const List* l) {
 	(void)l;
-	return 0;
+	return l->size;
 }
 
 /*-----------------------------------------------------------------*/
