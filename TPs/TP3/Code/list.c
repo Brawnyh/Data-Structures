@@ -58,6 +58,7 @@ List* list_push_back(List* l, int v) {
 
 void list_delete(ptrList* l) {
 	*l=NULL;
+	free(l);
 }
 
 /*-----------------------------------------------------------------*/
@@ -132,7 +133,14 @@ List* list_insert_at(List* l, int p, int v) {
 
 List* list_remove_at(List* l, int p) {
 	(void)p;
-	//frees
+	LinkedElement *curr=malloc(sizeof(LinkedElement));
+	curr=l->sentinel;
+	while(p!=0){
+		curr=curr->next;
+	}
+	curr->value=NULL;
+	curr->previous->next=curr->next;
+	
 	return l;
 }
 
