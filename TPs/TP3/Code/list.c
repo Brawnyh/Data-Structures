@@ -59,6 +59,7 @@ List* list_push_back(List* l, int v) {
 void list_delete(ptrList* l) {
 	*l=NULL;
 	free(l);
+	
 }
 
 /*-----------------------------------------------------------------*/
@@ -70,7 +71,7 @@ List* list_push_front(List* l, int v) {
 	e->next=l->sentinel->next;
 	e->previous=l->sentinel;
 	e->next->previous=e;
-	e->previous->next=e:
+	e->previous->next=e;
 	++(l->size);
 	return l;
 }
@@ -97,7 +98,7 @@ int list_back(const List* l) {
 
 List* list_pop_front(List* l) {
 	assert (list_is_empty(l));
-    LinkedList *e=l->sentinel->next;
+    LinkedElement *e=l->sentinel->next;
     e->next->previous=e->previous;
     e->previous->next=e->next;
     free(e);
@@ -108,6 +109,7 @@ List* list_pop_front(List* l) {
 /*-----------------------------------------------------------------*/
 
 List* list_pop_back(List* l){
+	//LinkedElement *tmp=l->sentinel->previous;
 	return l;
 }
 
@@ -119,7 +121,7 @@ List* list_insert_at(List* l, int p, int v) {
 	LinkedElement *insert=l->sentinel->next;
 	while(p--) insert=insert->next;
 	LinkedElement *e=malloc(sizeof(LinkedElement));
-	e->value=v:
+	e->value=v;
 	e->next=insert; 
     e->previous=insert->previous;
     e->next->previous=e;
@@ -138,7 +140,7 @@ List* list_remove_at(List* l, int p) {
 	while(p!=0){
 		curr=curr->next;
 	}
-	curr->value=NULL;
+	//curr->value=NULL;
 	curr->previous->next=curr->next;
 	
 	return l;
@@ -170,6 +172,9 @@ int list_size(const List* l) {
 List* list_map(List* l, ListFunctor f, void* environment) {
 	(void)f;
 	(void)environment;
+	for (LinkedElement *e=l->sentinel->next;e!=l->sentinel;e=e->next){
+		e->value=f(e->value,environment);
+	}
 	return l;
 }
 
