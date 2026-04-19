@@ -31,7 +31,7 @@ struct s_List {
 
 List* list_create(void) {
 	List* l = NULL;
-	l=malloc(sizeof(struct s_List)*sizeof(LinkedElement));
+	l=malloc(sizeof(struct s_List)+sizeof(LinkedElement));
 	
 	l->sentinel=(LinkedElement*)(l+1);
 	l->sentinel->previous=l->sentinel->next=l->sentinel;
@@ -57,8 +57,14 @@ List* list_push_back(List* l, int v) {
 /*-----------------------------------------------------------------*/
 
 void list_delete(ptrList* l) {
-	*l=NULL;
-	free(l);
+	LinkedElement *curr = (*l)->sentinel->next;
+    while (curr != (*l)->sentinel) {
+        LinkedElement *next = curr->next;
+        free(curr);
+        curr = next;
+    }
+    free(*l);
+    *l = NULL;
 	
 }
 
@@ -80,7 +86,7 @@ List* list_push_front(List* l, int v) {
 
 int list_front(const List* l) {
 	(void)l;
-	return l->sentinel->value;
+	return l->sentinel->next->value;
 	//return 0;
 }
 
@@ -88,16 +94,13 @@ int list_front(const List* l) {
 
 int list_back(const List* l) {
 	(void)l;
-	//linkedList tmp=l->sentinel
-	//while(!tempty) tmp=tmp->next
-	//return tmp->value
-	return 0;
+	return l->sentinel->previous->value;
 }
 
 /*-----------------------------------------------------------------*/
 
 List* list_pop_front(List* l) {
-	assert (list_is_empty(l));
+	assert (!list_is_empty(l));
     LinkedElement *e=l->sentinel->next;
     e->next->previous=e->previous;
     e->previous->next=e->next;
@@ -135,14 +138,12 @@ List* list_insert_at(List* l, int p, int v) {
 
 List* list_remove_at(List* l, int p) {
 	(void)p;
-	LinkedElement *curr=malloc(sizeof(LinkedElement));
-	curr=l->sentinel;
-	while(p!=0){
-		curr=curr->next;
-	}
-	//curr->value=NULL;
-	curr->previous->next=curr->next;
-	
+	LinkedElement *curr = l->sentinel->next;
+	while(p-- > 0) curr = curr->next;
+	curr->previous->next = curr->next;
+	curr->next->previous = curr->previous;
+	free(curr);
+	--(l->size);
 	return l;
 }
 
@@ -150,7 +151,10 @@ List* list_remove_at(List* l, int p) {
 
 int list_at(const List* l, int p) {
 	(void)l;
-	return p;
+	LinkedElement *curr = l->sentinel->next;
+	while(p-- > 0) curr = curr->next;
+	return curr->value;
+	
 }
 
 /*-----------------------------------------------------------------*/
