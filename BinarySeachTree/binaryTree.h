@@ -7,6 +7,6 @@
 #include <assert.h>
 
 
-typedef struct binTree tree
+typedef struct S_tree binTree
 
 #endif
