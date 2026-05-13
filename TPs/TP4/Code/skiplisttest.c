@@ -4,6 +4,7 @@
 
 #include "skiplist.h"
 #include "rng.h"
+#include <assert.h>
 
 /**
  *	@defgroup SkipListTest Test program for SkipList Implantation
@@ -76,6 +77,12 @@ unsigned int read_uint(FILE* input) {
   abort();
 }
 
+static void print_value(int v, void* env) {
+    (void)env;
+    printf("%d ", v);
+}
+
+
 /** Build a list corresponding to the fiven file number.
  */
 SkipList* buildlist(int num) {
@@ -107,13 +114,56 @@ SkipList* buildlist(int num) {
  */
 void test_construction(int num){
 	(void) num;
+	SkipList* d = buildlist(num);
+    printf("Skiplist (%u)\n", skiplist_size(d));
+    skiplist_map(d, print_value, NULL);
+    printf("\n");
+    skiplist_delete(&d);
 }
 
+
+static void print_search_stats(SkipList* d, unsigned int nb, unsigned int found,
+                                unsigned int not_found, unsigned int total_ops,
+                                unsigned int min_ops, unsigned int max_ops) {
+    printf("Statistics : \n");
+    printf("\tSize of the list : %u\n", skiplist_size(d));
+    printf("Search %u values :\n", nb);
+    printf("\tFound %u\n", found);
+    printf("\tNot found %u\n", not_found);
+    printf("\tMin number of operations : %u\n", min_ops);
+    printf("\tMax number of operations : %u\n", max_ops);
+    printf("\tMean number of operations : %u\n", nb > 0 ? total_ops / nb : 0);
+}
 /** Exercice 2.
  Programming and test of skiplist search operator.
  */
 void test_search(int num){
 	(void) num;
+	SkipList* d = buildlist(num);
+    char filename[256];
+	snprintf(filename, sizeof(filename), "../Test/test_files/search_%d.txt", num);
+    FILE* f = fopen(filename, "r");
+    //free(filename);
+    assert(f);
+
+    unsigned int nb = read_uint(f);
+    unsigned int total_ops = 0, min_ops = ~0u, max_ops = 0;
+    unsigned int found = 0, not_found = 0;
+
+    for (unsigned int i = 0; i < nb; i++) {
+        int v = read_int(f);
+        unsigned int ops = 0;
+        bool res = skiplist_search(d, v, &ops);
+        printf("%d -> %s\n", v, res ? "true" : "false");
+        if (res) found++; else not_found++;
+        total_ops += ops;
+        if (ops < min_ops) min_ops = ops;
+        if (ops > max_ops) max_ops = ops;
+    }
+    fclose(f);
+
+    print_search_stats(d, nb, found, not_found, total_ops, min_ops, max_ops);
+    skiplist_delete(&d);
 }
 
 /** Exercice 3.
@@ -121,6 +171,42 @@ void test_search(int num){
  */
 void test_search_iterator(int num){
 	(void) num;
+    SkipList* d = buildlist(num);
+    char *filename = gettestfilename("search", num);
+    FILE* f = fopen(filename, "r");
+    free(filename);
+    assert(f);
+
+    unsigned int nb = read_uint(f);
+    unsigned int total_ops = 0, min_ops = ~0u, max_ops = 0;
+    unsigned int found = 0, not_found = 0;
+
+    for (unsigned int i = 0; i < nb; i++) {
+        int v = read_int(f);
+        unsigned int ops = 0;
+        bool res = false;
+
+        SkipListIterator* it = skiplist_iterator_create(d, FORWARD_ITERATOR);
+        for (it = skiplist_iterator_begin(it);
+             !skiplist_iterator_end(it);
+             it = skiplist_iterator_next(it)) {
+            ops++;
+            int cur = skiplist_iterator_value(it);
+            if (cur == v) { res = true; break; }
+            if (cur > v)  { break; }
+        }
+        skiplist_iterator_delete(&it);
+
+        printf("%d -> %s\n", v, res ? "true" : "false");
+        if (res) found++; else not_found++;
+        total_ops += ops;
+        if (ops < min_ops) min_ops = ops;
+        if (ops > max_ops) max_ops = ops;
+    }
+    fclose(f);
+
+    print_search_stats(d, nb, found, not_found, total_ops, min_ops, max_ops);
+    skiplist_delete(&d);
 }
 
 /** Exercice 4.
@@ -128,6 +214,27 @@ void test_search_iterator(int num){
  */
 void test_remove(int num){
 	(void) num;
+	SkipList* d = buildlist(num);
+    char *filename = gettestfilename("remove", num);
+    FILE* f = fopen(filename, "r");
+    free(filename);
+    assert(f);
+
+    unsigned int nb = read_uint(f);
+    for (unsigned int i = 0; i < nb; i++)
+        skiplist_remove(d, read_int(f));
+    fclose(f);
+
+    printf("Skiplist (%u)\n", skiplist_size(d));
+    SkipListIterator* it = skiplist_iterator_create(d, BACKWARD_ITERATOR);
+    for (it = skiplist_iterator_begin(it);
+         !skiplist_iterator_end(it);
+         it = skiplist_iterator_next(it)) {
+        printf("%d ", skiplist_iterator_value(it));
+    }
+    printf("\n");
+    skiplist_iterator_delete(&it);
+    skiplist_delete(&d);
 }
 
 /** Function you ca use to generate dataset for testing.
@@ -166,28 +273,27 @@ int main(int argc, const char *argv[]){
 
 /* Generates a set of test files for a given number of value. */
 
-void generate(int nbvalues){
-	FILE *output;
-	int depth;
-	int maxvalue;
-	output = fopen("construct.txt", "w");
-	srand(nbvalues);
-	depth = rand()%16;
-	maxvalue = rand()%10 * nbvalues;
-	fprintf(output, "%d\n%d\n", depth, nbvalues);
-	for (int i=0; i< nbvalues; ++i) {
-		fprintf(output, "%d\n", rand()%maxvalue);
-	}
-	fclose(output);
-	output = fopen("search.txt", "w");
-	srand(rand());
-	nbvalues *= depth/4;
-	fprintf(output, "%d\n", nbvalues);
-	for (int i=0; i< nbvalues; ++i) {
-		fprintf(output, "%d\n", rand()%maxvalue);
-	}
-	fclose(output);
+
+void generate(int nbvalues) {
+    FILE *output;
+    int depth, maxvalue;
+    output = fopen("construct.txt", "w");
+    srand(nbvalues);
+    depth = rand() % 16;
+    maxvalue = rand() % 10 * nbvalues;
+    fprintf(output, "%d\n%d\n", depth, nbvalues);
+    for (int i = 0; i < nbvalues; ++i)
+        fprintf(output, "%d\n", rand() % maxvalue);
+    fclose(output);
+    output = fopen("search.txt", "w");
+    srand(rand());
+    nbvalues *= depth / 4;
+    fprintf(output, "%d\n", nbvalues);
+    for (int i = 0; i < nbvalues; ++i)
+        fprintf(output, "%d\n", rand() % maxvalue);
+    fclose(output);
 }
+
 
 
 /** @} */
